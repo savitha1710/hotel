@@ -1,152 +1,7 @@
-// import { useState } from "react";
-// import { useNavigate } from "react-router-dom";
-
-// const Login = () => {
-//    const [email, setEmail] = useState("");
-//    const [password, setPassword] = useState("");
-//    const [errorMessage, setErrorMessage] = useState("");
-//    const navigate = useNavigate();
-
-//    const handleLogin = (e) => {
-//       e.preventDefault();
-//       if (email === "test@example.com" && password === "password123") {
-//          // Redirect on successful login
-//          navigate("/dashboard");
-//       } else {
-//          // Show error message on invalid login
-//          setErrorMessage("Invalid credentials");
-//       }
-//    };
-
-//    return (
-//       <div>
-//          <h2>Login Page</h2>
-//          <form onSubmit={handleLogin}>
-//             <div>
-//                <label>Email:</label>
-//                <input
-//                   type="email"
-//                   value={email}
-//                   onChange={(e) => setEmail(e.target.value)}
-//                   required
-//                />
-//             </div>
-//             <div>
-//                <label>Password:</label>
-//                <input
-//                   type="password"
-//                   value={password}
-//                   onChange={(e) => setPassword(e.target.value)}
-//                   required
-//                />
-//             </div>
-//             <button type="submit">Login</button>
-//          </form>
-//          {errorMessage && <p>{errorMessage}</p>}
-//       </div>
-//    );
-// };
-
-// export default Login;
-
-
-
-
-
-
-
-
-
-
-
-// import React, { useState } from "react";
-// import { useHistory } from "react-router-dom";
-
-// const Login = () => {
-//    const [email, setEmail] = useState("");
-//    const [password, setPassword] = useState("");
-//    const [errorMessage, setErrorMessage] = useState("");
-//    const history = useHistory();  // ✅ Use history instead of useNavigate
-
-//    const handleLogin = (e) => {
-//       e.preventDefault();
-//       if (email === "test@example.com" && password === "password123") {
-//          history.push("/dashboard"); // ✅ Use history.push() instead of navigate()
-//       } else {
-//          setErrorMessage("Invalid credentials");
-//       }
-//    };
-
-//    return (
-//       <div>
-//          <h2>Login Page</h2>
-//          <form onSubmit={handleLogin}>
-//             <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} required />
-//             <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} required />
-//             <button type="submit">Login</button>
-//          </form>
-//          {errorMessage && <p>{errorMessage}</p>}
-//       </div>
-//    );
-// };
-
-// export default Login;
-
-
-
-
-
-// import React, { useState } from "react";
-// import { useHistory } from "react-router-dom";
-// import "../styles.css"; // Import the styles
-
-// const Login = () => {
-//   const [email, setEmail] = useState("");
-//   const [password, setPassword] = useState("");
-//   const [errorMessage, setErrorMessage] = useState("");
-//   const history = useHistory();
-
-//   const handleLogin = (e) => {
-//     e.preventDefault();
-//     if (email === "test@example.com" && password === "password123") {
-//       history.push("/dashboard");
-//     } else {
-//       setErrorMessage("Invalid credentials");
-//     }
-//   };
-
-//   return (
-//     <div className="auth-container">
-//       <h2>Login</h2>
-//       <form onSubmit={handleLogin}>
-//         <input
-//           type="email"
-//           placeholder="Enter your email"
-//           value={email}
-//           onChange={(e) => setEmail(e.target.value)}
-//           required
-//         />
-//         <input
-//           type="password"
-//           placeholder="Enter your password"
-//           value={password}
-//           onChange={(e) => setPassword(e.target.value)}
-//           required
-//         />
-//         <button type="submit">Login</button>
-//       </form>
-//       {errorMessage && <p className="error-message">{errorMessage}</p>}
-//     </div>
-//   );
-// };
-
-// export default Login;
-
-
-
 
 import React, { useState } from "react";
 import { useHistory } from "react-router-dom";
+import axios from "axios";
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -154,29 +9,26 @@ const Login = () => {
   const [errorMessage, setErrorMessage] = useState("");
   const history = useHistory();
 
-//   const handleLogin = (e) => {
-//     e.preventDefault();
-//     if (email === "test@example.com" && password === "password123") {
-//       history.push("/dashboard");
-//     } else {
-//       setErrorMessage("Invalid credentials");
-//     }
-//   };
-
-const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
     setErrorMessage("");
-  
-    // Retrieve stored user data
-    const storedUser = JSON.parse(localStorage.getItem("user"));
-  
-    if (storedUser && email === storedUser.email && password === storedUser.password) {
-      alert("Login successful!");
-      history.push("/home"); // Redirect
-    } else {
-      setErrorMessage("Invalid credentials");
+
+    try {
+      const response = await axios.post("http://localhost:5001/api/login", { email, password });
+
+      if (response.status === 200) {
+        // Save token in localStorage
+        localStorage.setItem("token", response.data.token);
+        localStorage.setItem("user", JSON.stringify(response.data.user));
+
+        alert("Login successful!");
+        history.push("/home"); // Redirect to home page
+      }
+    } catch (error) {
+      setErrorMessage(error.response?.data?.message || "Login failed. Try again.");
     }
   };
+
   return (
     <div style={styles.container}>
       <div style={styles.authBox}>
@@ -224,7 +76,6 @@ const styles = {
     boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)",
     textAlign: "center",
     width: "350px",
-    color: "",
   },
   heading: {
     fontSize: "24px",
@@ -248,13 +99,10 @@ const styles = {
     border: "none",
     borderRadius: "6px",
     background: "#BFA98D",
-    color: "white",
+    color: "black",
     fontSize: "18px",
     cursor: "pointer",
     transition: "0.3s",
-  },
-  buttonHover: {
-    background: "#45a049",
   },
   error: {
     color: "#ff4d4d",
@@ -263,3 +111,4 @@ const styles = {
 };
 
 export default Login;
+

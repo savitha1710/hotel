@@ -24,35 +24,6 @@ function Room() {
     </>
   );
 }
-// const handleConfirmBooking = async () => {
-//   if (
-//     bookingDetails.guestName &&
-//     bookingDetails.phone &&
-//     bookingDetails.checkInDate &&
-//     bookingDetails.checkOutDate
-//   ) {
-//     try {
-//       const response = await fetch("http://localhost:5000/api/bookings", {
-//         method: "POST",
-//         headers: { "Content-Type": "application/json" },
-//         body: JSON.stringify(bookingDetails),
-//       });
 
-//       const data = await response.json();
-//       if (response.ok) {
-//         alert(data.message);
-//         setIsBooked(true);
-//         setIsBooking(false);
-//       } else {
-//         alert("Error booking room");
-//       }
-//     } catch (error) {
-//       console.error("Error:", error);
-//       alert("Failed to book room");
-//     }
-//   } else {
-//     alert("Please fill in all details before booking.");
-//   }
-// };
 
  export default Room;

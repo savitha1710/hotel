@@ -77,7 +77,7 @@ export default class SingleRoom extends Component {
 
             <article className="info">
               <h3>information:</h3>
-              <h6>price : ${price}</h6>
+              <h6>price : ₹{price}</h6>
               <h6>size : {size} SQFT</h6>
               <h6>
                 max capacity :{" "}
